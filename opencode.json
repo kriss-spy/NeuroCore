@@ -1,0 +1,37 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "command": {
+    "wiki-ingest": {
+      "template": "Run the wiki-ingest skill. Ingest the following sources into the Obsidian wiki vault: $ARGUMENTS. Follow the skill instructions for extract, resolve, and schema steps. Update .manifest.json, index.md, log.md, and hot.md after completing.",
+      "description": "Ingest documents into the wiki vault"
+    },
+    "wiki-update": {
+      "template": "Run the wiki-update skill. Scan the current project, identify what's worth keeping (architecture decisions, patterns, trade-offs, not code listings), and sync it into the Obsidian vault. Check .manifest.json for last_commit_synced and only process the delta since then.",
+      "description": "Sync current project knowledge into the wiki"
+    },
+    "wiki-query": {
+      "template": "Run the wiki-query skill. Answer the following question using the Obsidian wiki vault: $ARGUMENTS. Use tiered retrieval: scan titles, tags, and summaries first; only open page bodies if the index pass can't answer. Return a synthesized answer with [[wikilink]] citations.",
+      "description": "Query the wiki for knowledge"
+    },
+    "wiki-status": {
+      "template": "Run the wiki-status skill. Show what's been ingested, what's pending, and the current delta. Also analyze vault shape: top hubs, bridge pages, tag cluster cohesion, and suggested questions the wiki can answer.",
+      "description": "Show wiki ingestion status and insights"
+    },
+    "wiki-lint": {
+      "template": "Run the wiki-lint skill. Audit the Obsidian vault for orphaned pages, broken wikilinks, stale content, contradictions, and missing frontmatter. Report a dashboard of wiki health issues.",
+      "description": "Audit wiki health and find issues"
+    },
+    "cross-linker": {
+      "template": "Run the cross-linker skill. Scan the vault for unlinked mentions of existing pages and weave them into the knowledge graph with [[wikilinks]]. Reduce orphan pages and strengthen connections.",
+      "description": "Auto-discover and insert missing wikilinks"
+    },
+    "wiki-rebuild": {
+      "template": "Run the wiki-rebuild skill. Ask the user whether to archive the current wiki (timestamped snapshot), rebuild from scratch using .manifest.json sources, or restore a previous archive. Proceed based on their choice.",
+      "description": "Archive, rebuild, or restore the wiki"
+    },
+    "wiki-capture": {
+      "template": "Run the wiki-capture skill. Save the current conversation as a wiki note. Distill the key concepts, decisions, and takeaways into a properly formatted markdown page in the vault with correct frontmatter.",
+      "description": "Save current conversation as wiki note"
+    }
+  }
+}

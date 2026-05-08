@@ -1,0 +1,65 @@
+{
+  "version": 1,
+  "sources": [
+    {
+      "path": "README.md",
+      "ingested_at": "2026-05-08T13:30:00+08:00",
+      "size_bytes": 5118,
+      "modified_at": "2026-05-08T12:16:11+08:00",
+      "content_hash": "sha256:e2e6bfcba6784e528a71e140f8da1b3eccde2f95264219517ce67bbd068c7349",
+      "source_type": "document",
+      "project": "NeuroCore",
+      "pages_created": ["projects/NeuroCore/NeuroCore.md", "concepts/Embodied AI.md"],
+      "pages_updated": ["concepts/Vision-Language-Action Model.md", "concepts/Coreset Selection.md", "concepts/Predictive Coding.md", "concepts/Action Chunking.md", "concepts/Imitation Learning.md"]
+    },
+    {
+      "path": "docs/papers/OpenVLA: An Open-Source Vision-Language-Action Model.pdf",
+      "ingested_at": "2026-05-08T13:30:00+08:00",
+      "size_bytes": 13240309,
+      "modified_at": "2026-05-08T12:15:26+08:00",
+      "content_hash": "sha256:353c37df34458f12f969b14dfd8b77175b727b9cddea7bb891759beddeefe1be",
+      "source_type": "document",
+      "project": "NeuroCore",
+      "pages_created": ["entities/OpenVLA.md", "references/OpenVLA Paper.md"],
+      "pages_updated": ["concepts/Vision-Language-Action Model.md", "concepts/Embodied AI.md", "concepts/Imitation Learning.md"]
+    },
+    {
+      "path": "docs/papers/Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware (ACT).pdf",
+      "ingested_at": "2026-05-08T13:30:00+08:00",
+      "size_bytes": 5353485,
+      "modified_at": "2026-05-08T12:14:41+08:00",
+      "content_hash": "sha256:2e2fe25860f5f9cee9e655a2714e9f2264a7a5078bcd267c16d3f39af461345a",
+      "source_type": "document",
+      "project": "NeuroCore",
+      "pages_created": ["entities/ACT.md", "references/ACT Paper.md", "concepts/Imitation Learning.md"],
+      "pages_updated": ["concepts/Action Chunking.md", "concepts/Embodied AI.md"]
+    },
+    {
+      "path": "docs/papers/Beyond neural scaling laws: beating power law scaling via data pruning.pdf",
+      "ingested_at": "2026-05-08T13:30:00+08:00",
+      "size_bytes": 8523534,
+      "modified_at": "2026-05-08T12:15:18+08:00",
+      "content_hash": "sha256:ed12a79cc3c5b47d988d18ffe801d4de1b03ff36755da8717e8f504769979f90",
+      "source_type": "document",
+      "project": "NeuroCore",
+      "pages_created": ["references/Data Pruning Paper.md", "concepts/Neural Scaling Laws.md"],
+      "pages_updated": ["concepts/Coreset Selection.md"]
+    },
+    {
+      "path": "docs/papers/Predictive Coding: a Theoretical and Experimental Review.pdf",
+      "ingested_at": "2026-05-08T13:30:00+08:00",
+      "size_bytes": 1809710,
+      "modified_at": "2026-05-08T12:15:36+08:00",
+      "content_hash": "sha256:3d2c516409f58732d18aa5e2a1308dc804b07ae3a7b17d3b66a7243e8aebca04",
+      "source_type": "document",
+      "project": "NeuroCore",
+      "pages_created": ["references/Predictive Coding Review.md"],
+      "pages_updated": ["concepts/Predictive Coding.md"]
+    }
+  ],
+  "stats": {
+    "total_sources_ingested": 5,
+    "total_pages": 14
+  },
+  "last_commit_synced": null
+}
