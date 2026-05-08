@@ -1,0 +1,14 @@
+torch
+torchvision
+transformers
+datasets
+lerobot
+scikit-learn
+matplotlib
+seaborn
+pandas
+numpy
+tqdm
+jupyter
+ipykernel
+pillow

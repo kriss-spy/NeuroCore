@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "references/ACT Paper.md",
+                "file": "entities/OpenVLA.md",
                 "mode": "preview",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ACT Paper"
+              "title": "OpenVLA"
             }
           }
         ]
@@ -94,7 +94,7 @@
             "state": {
               "type": "backlink",
               "state": {
-                "file": "references/ACT Paper.md",
+                "file": "entities/OpenVLA.md",
                 "collapseAll": false,
                 "extraContext": false,
                 "sortOrder": "alphabetical",
@@ -104,7 +104,7 @@
                 "unlinkedCollapsed": true
               },
               "icon": "links-coming-in",
-              "title": "Backlinks for ACT Paper"
+              "title": "Backlinks for OpenVLA"
             }
           },
           {
@@ -113,12 +113,12 @@
             "state": {
               "type": "outgoing-link",
               "state": {
-                "file": "references/ACT Paper.md",
+                "file": "entities/OpenVLA.md",
                 "linksCollapsed": false,
                 "unlinkedCollapsed": true
               },
               "icon": "links-going-out",
-              "title": "Outgoing links from ACT Paper"
+              "title": "Outgoing links from OpenVLA"
             }
           },
           {
@@ -156,13 +156,13 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "references/ACT Paper.md",
+                "file": "entities/OpenVLA.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
               "icon": "lucide-list",
-              "title": "Outline of ACT Paper"
+              "title": "Outline of OpenVLA"
             }
           }
         ]
@@ -185,7 +185,9 @@
   },
   "active": "071cc9e3c1ccfcb5",
   "lastOpenFiles": [
+    "projects/NeuroCore/NeuroCore.md",
     "index.md",
+    "references/ACT Paper.md",
     "concepts/Vision-Language-Action Model.md",
     "concepts/Embodied AI.md",
     "hot.md",
@@ -194,14 +196,12 @@
     "concepts/Neural Scaling Laws.md",
     "references/Predictive Coding Review.md",
     "references/Data Pruning Paper.md",
-    "references/ACT Paper.md",
     "references/OpenVLA Paper.md",
     "entities/ACT.md",
     "entities/OpenVLA.md",
     "concepts/Action Chunking.md",
     "concepts/Predictive Coding.md",
     "concepts/Coreset Selection.md",
-    "projects/NeuroCore/NeuroCore.md",
     "projects/NeuroCore"
   ]
 }
