@@ -1,14 +1,17 @@
-torch
-torchvision
-transformers
-datasets
-lerobot
-scikit-learn
-matplotlib
-seaborn
-pandas
-numpy
-tqdm
-jupyter
-ipykernel
-pillow
+# Core dependencies for NeuroCore
+# Pinned for reproducibility (generated 2026-05-12)
+
+torch==2.11.0
+torchvision==0.26.0
+transformers==5.8.0
+datasets==3.6.0
+lerobot==0.3.2
+scikit-learn==1.8.0
+matplotlib==3.10.9
+seaborn==0.13.2
+pandas==3.0.3
+numpy==2.4.4
+tqdm==4.67.3
+jupyter==1.1.1
+ipykernel==7.2.0
+pillow==12.2.0
