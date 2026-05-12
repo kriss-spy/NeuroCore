@@ -33,7 +33,12 @@ def _load_cached_features(feature_path: str) -> Dict[Tuple[int, int], torch.Tens
         raise FileNotFoundError(
             f"Feature cache not found at {feature_path}. Run feature extraction first."
         )
-    return torch.load(feature_path, weights_only=True)
+    raw = torch.load(feature_path, weights_only=True)
+    # Normalize keys to Python ints (handles legacy tensor-key caches)
+    return {
+        (int(k[0]), int(k[1])): v
+        for k, v in raw.items()
+    }
 
 
 def _select_train_episodes(total_episodes: int, count: int, seed: int) -> List[int]:
@@ -101,10 +106,17 @@ def run_baseline(
     feature_path: str = "results/features_resnet18.pt",
     config: BaselineConfig | None = None,
     train_episodes: List[int] | None = None,
+    save_dir: str = "results",
 ) -> Dict[str, object]:
     """
     Train a baseline MLP on a given subset of episodes (or a random 10% subset if None)
     and evaluate on the rest.
+
+    Args:
+        feature_path: path to cached ResNet-18 features.
+        config: training hyperparameters.
+        train_episodes: optional list of episode indices to train on.
+        save_dir: directory to save metrics and checkpoints.
 
     Returns a dict with metrics, loss curves, and selected episodes.
     """
@@ -112,14 +124,13 @@ def run_baseline(
     _set_seed(cfg.seed)
 
     dataset = load_aloha_dataset()
-    total_episodes = dataset.num_episodes
-    
+    total_episodes = int(max(dataset["episode_index"])) + 1
+
     if train_episodes is None:
         train_episodes = _select_train_episodes(total_episodes, cfg.train_episode_count, cfg.seed)
     else:
-        # Ensure they are sorted and standard python ints
         train_episodes = sorted([int(ep) for ep in train_episodes])
-        
+
     test_episodes = [ep for ep in range(total_episodes) if ep not in train_episodes]
 
     features = _load_cached_features(feature_path)
@@ -185,9 +196,8 @@ def run_baseline(
     mse = float(np.mean((preds - y_test) ** 2))
     per_joint_mse = np.mean((preds - y_test) ** 2, axis=0).tolist()
 
-    os.makedirs("results/checkpoints", exist_ok=True)
-    os.makedirs("results", exist_ok=True)
-    checkpoint_path = "results/checkpoints/baseline.pt"
+    os.makedirs(os.path.join(save_dir, "checkpoints"), exist_ok=True)
+    checkpoint_path = os.path.join(save_dir, "checkpoints", "baseline.pt")
     torch.save(model.state_dict(), checkpoint_path)
 
     metrics = {
@@ -199,7 +209,8 @@ def run_baseline(
         "val_losses": val_losses,
     }
 
-    with open("results/baseline_metrics.json", "w", encoding="utf-8") as f:
+    metrics_path = os.path.join(save_dir, "baseline_metrics.json")
+    with open(metrics_path, "w", encoding="utf-8") as f:
         json.dump(metrics, f, indent=2)
 
     return metrics

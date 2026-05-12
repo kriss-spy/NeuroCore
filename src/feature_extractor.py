@@ -65,7 +65,7 @@ def extract_and_cache_features(save_path="results/features_resnet18.pt"):
             # Extract 512-D feature vector
             feat = model(img_tensor).squeeze(0).cpu()
 
-            features_dict[(ep_idx, frame_idx)] = feat
+            features_dict[(int(ep_idx), int(frame_idx))] = feat
 
     # Ensure directory exists and cache the results
     os.makedirs(os.path.dirname(save_path), exist_ok=True)

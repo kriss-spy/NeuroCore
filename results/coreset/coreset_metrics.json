@@ -1,0 +1,13 @@
+{
+  "baseline_mse": 0.006719029508531094,
+  "coreset_mse": 0.006474296096712351,
+  "improvement": 0.00024473341181874275,
+  "improvement_percent": 3.642392275670271,
+  "selected_episodes": [
+    30,
+    8,
+    6,
+    11,
+    23
+  ]
+}
