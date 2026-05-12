@@ -48,6 +48,8 @@ dataset = load_dataset("lerobot/aloha_sim_transfer_cube_human")
 
 ## Quick Start
 
+### Local
+
 ```bash
 # Clone the repository
 git clone <repo-url>
@@ -57,14 +59,18 @@ cd NeuroCore
 pip install -r requirements.txt
 
 # Run baseline
-python src/baseline.py
+python -m src.baseline
 
 # Run coreset selection
-python src/coreset/select.py
+python -m src.coreset.select
 
 # Validate
-python src/validate.py
+python -m src.validate
 ```
+
+### Google Colab
+
+Open `notebooks/NeuroCore_full.ipynb` directly in Colab. The first cell auto-detects Colab, clones the repo, and installs dependencies. The notebook runs end-to-end without any local setup.
 
 ## Project Structure
 
@@ -79,6 +85,7 @@ NeuroCore/
 │   ├── data_utils.py           # Dataset loading and action extraction
 │   ├── feature_extractor.py    # Frozen ResNet-18 feature extraction
 │   ├── baseline.py             # Random sampling baseline + MLP
+│   ├── validate.py             # Coreset retraining + comparison
 │   └── coreset/
 │       ├── __init__.py
 │       ├── select.py           # Unified coreset selection
@@ -89,11 +96,19 @@ NeuroCore/
 │   ├── 02_feature_extraction.ipynb
 │   ├── 03_baseline.ipynb
 │   ├── 04_coreset_selection.ipynb
-│   └── 05_coreset_validation.ipynb
+│   ├── 05_coreset_validation.ipynb
+│   └── NeuroCore_full.ipynb    # Colab-ready master notebook
 ├── docs/
 │   ├── papers/                 # Reference PDFs
 │   └── neurocore-wiki/         # Project knowledge base (Obsidian)
-└── results/                    # Cached features, checkpoints, metrics
+└── results/
+    ├── features_resnet18.pt    # Cached 512-D visual features
+    ├── checkpoints/            # Model checkpoints
+    ├── figures/                # Comparison plots
+    ├── coreset_selection.json  # Selected episode IDs
+    ├── baseline_metrics.json   # Baseline results
+    ├── coreset/                # Coreset validation results
+    └── report.md               # Research report
 ```
 
 ## Brain-Inspired Mechanisms
