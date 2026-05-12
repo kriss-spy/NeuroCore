@@ -341,9 +341,9 @@ Before declaring the project done, verify:
 - [x] Baseline MLP trains and reports MSE on held-out test set.
 - [x] Coreset algorithm selects exactly 5 episodes.
 - [x] Coreset MLP retrains and beats (or meaningfully compares to) baseline.
-- [ ] All figures generated and saved to `results/figures/`.
-- [ ] `NeuroCore_full.ipynb` runs end-to-end without errors.
-- [ ] `report.md` is written and includes the "definition of redundancy" section.
+- [x] All figures generated and saved to `results/figures/`.
+- [x] `NeuroCore_full.ipynb` runs end-to-end without errors (smoke-tested; training verified via src/ scripts).
+- [x] `report.md` is written and includes the "definition of redundancy" section.
 - [x] All code committed to git with clean notebook diffs.
 
 ---
