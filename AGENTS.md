@@ -1,7 +1,7 @@
 # AGENTS.md — NeuroCore
 
 > Course project: brain-inspired coreset selection for lightweight VLA robotic-arm action prediction.  
-> Repo is currently **documentation + wiki setup only** — no source code yet.
+> Repo now contains runnable Python source, Jupyter notebooks, and cached experiment results.
 
 ## Project Spec (source of truth)
 
@@ -39,14 +39,14 @@
 |------|---------|
 | `README.md` | Assignment description (Chinese) — do not edit lightly |
 | `docs/papers/` | Reference PDFs (ACT, OpenVLA, data pruning, predictive coding) |
-| `docs/obsidian-wiki/` | **Obsidian vault** — project knowledge base |
+| `docs/neurocore-wiki/` | **Obsidian vault** — project knowledge base |
 | `.agents/skills/` | OpenCode skill definitions (managed externally) — **not project source** |
 | `opencode.json` | Custom OpenCode commands for wiki operations |
 | `.env` | Vault path and wiki config |
 
 ## Obsidian Wiki (Knowledge Base)
 
-- Vault location is configured in `.env`: `OBSIDIAN_VAULT_PATH="docs/obsidian-wiki"`.
+- Vault location is configured in `.env`: `OBSIDIAN_VAULT_PATH="docs/neurocore-wiki"`.
 - Custom OpenCode commands are registered in `opencode.json`:
   - `wiki-ingest`, `wiki-update`, `wiki-query`, `wiki-status`, `wiki-lint`, `cross-linker`, `wiki-rebuild`, `wiki-capture`
 - `.manifest.json` in the vault tracks which sources have been ingested and which wiki pages were created/updated.
@@ -54,7 +54,7 @@
 
 ## Toolchain Notes
 
-- **No `requirements.txt`, `pyproject.toml`, or lockfile exists yet** — you will need to create one.
+- `requirements.txt` exists and lists core dependencies (`torch`, `transformers`, `datasets`, `lerobot`, etc.).
 - **No CI, lint, or test config exists yet** — set up as needed (recommended: `pytest`, `ruff`/`black`).
 - Pre-installed OpenCode skills cover HuggingFace, PyTorch Lightning, scikit-learn, scientific visualization, etc.  
   Use them when relevant, but do not treat skill scripts as project dependencies.
@@ -69,6 +69,6 @@
 ## Quick Start Checklist for New Sessions
 
 1. Read `README.md` to confirm the latest assignment requirements.
-2. Check `docs/obsidian-wiki/projects/NeuroCore/NeuroCore.md` for distilled context from prior sessions.
-3. If source code already exists, look for `baseline/`, `src/`, or `notebooks/` directories.
-4. Install dependencies once a `requirements.txt` or `pyproject.toml` is created.
+2. Check `docs/neurocore-wiki/projects/NeuroCore/NeuroCore.md` for distilled context from prior sessions.
+3. Source code lives in `src/` and `notebooks/` — inspect those for current implementation state.
+4. Install dependencies: `pip install -r requirements.txt` (or `uv pip install -r requirements.txt`).

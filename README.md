@@ -53,7 +53,7 @@ dataset = load_dataset("lerobot/aloha_sim_transfer_cube_human")
 git clone <repo-url>
 cd NeuroCore
 
-# Install dependencies (TODO: create requirements.txt)
+# Install dependencies
 pip install -r requirements.txt
 
 # Run baseline
@@ -72,17 +72,28 @@ python src/validate.py
 NeuroCore/
 ├── README.md                    # This file
 ├── AGENTS.md                    # Agent instructions for OpenCode
-├── requirements.txt             # Python dependencies (TODO)
+├── PLAN.md                      # Execution plan and checklist
+├── requirements.txt             # Python dependencies
+├── .env                         # Wiki path configuration
 ├── src/
-│   ├── baseline.py             # Random sampling baseline
-│   ├── coreset/
-│   │   ├── select.py           # Coreset selection algorithm
-│   │   └── metrics.py          # Redundancy metrics
-│   └── validate.py             # Validation and comparison
+│   ├── data_utils.py           # Dataset loading and action extraction
+│   ├── feature_extractor.py    # Frozen ResNet-18 feature extraction
+│   ├── baseline.py             # Random sampling baseline + MLP
+│   └── coreset/
+│       ├── __init__.py
+│       ├── select.py           # Unified coreset selection
+│       ├── temporal_filter.py  # Predictive coding–inspired scoring
+│       └── distributional_filter.py  # RAS-inspired clustering scoring
+├── notebooks/
+│   ├── 01_data_exploration.ipynb
+│   ├── 02_feature_extraction.ipynb
+│   ├── 03_baseline.ipynb
+│   ├── 04_coreset_selection.ipynb
+│   └── 05_coreset_validation.ipynb
 ├── docs/
 │   ├── papers/                 # Reference PDFs
-│   └── obsidian-wiki/          # Project knowledge base
-└── results/                    # Experiment outputs (TODO)
+│   └── neurocore-wiki/         # Project knowledge base (Obsidian)
+└── results/                    # Cached features, checkpoints, metrics
 ```
 
 ## Brain-Inspired Mechanisms

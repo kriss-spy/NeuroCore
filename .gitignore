@@ -1,0 +1,26 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+
+# Virtual environments
+.venv/
+env/
+venv/
+
+# IDE
+.vscode/settings.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Jupyter notebook checkpoints (not outputs)
+.ipynb_checkpoints/
+
+# Large binary artifacts that can be regenerated
+# Uncomment if you want to exclude checkpoints from git
+# results/checkpoints/*.pt
+# notebooks/results/checkpoints/*.pt

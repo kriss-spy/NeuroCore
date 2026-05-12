@@ -67,10 +67,7 @@ def _build_feature_action_pairs(
         frame = int(frame_idx)
         if ep not in episode_set:
             continue
-        if (
-            max_frames_per_episode is not None
-            and per_episode_counts[ep] >= max_frames_per_episode
-        ):
+        if max_frames_per_episode is not None and per_episode_counts[ep] >= max_frames_per_episode:
             continue
         if (ep, frame) not in action_map:
             continue
@@ -86,9 +83,7 @@ def _build_feature_action_pairs(
 
 
 class BaselineMLP(nn.Module):
-    def __init__(
-        self, input_dim: int, hidden_dims: Tuple[int, int], output_dim: int
-    ) -> None:
+    def __init__(self, input_dim: int, hidden_dims: Tuple[int, int], output_dim: int) -> None:
         super().__init__()
         self.net = nn.Sequential(
             nn.Linear(input_dim, hidden_dims[0]),
@@ -105,9 +100,11 @@ class BaselineMLP(nn.Module):
 def run_baseline(
     feature_path: str = "results/features_resnet18.pt",
     config: BaselineConfig | None = None,
+    train_episodes: List[int] | None = None,
 ) -> Dict[str, object]:
     """
-    Train a baseline MLP on a random 10% subset of episodes and evaluate on the rest.
+    Train a baseline MLP on a given subset of episodes (or a random 10% subset if None)
+    and evaluate on the rest.
 
     Returns a dict with metrics, loss curves, and selected episodes.
     """
@@ -116,9 +113,13 @@ def run_baseline(
 
     dataset = load_aloha_dataset()
     total_episodes = dataset.num_episodes
-    train_episodes = _select_train_episodes(
-        total_episodes, cfg.train_episode_count, cfg.seed
-    )
+    
+    if train_episodes is None:
+        train_episodes = _select_train_episodes(total_episodes, cfg.train_episode_count, cfg.seed)
+    else:
+        # Ensure they are sorted and standard python ints
+        train_episodes = sorted([int(ep) for ep in train_episodes])
+        
     test_episodes = [ep for ep in range(total_episodes) if ep not in train_episodes]
 
     features = _load_cached_features(feature_path)
@@ -141,9 +142,7 @@ def run_baseline(
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
 
-    model = BaselineMLP(input_dim=512, hidden_dims=cfg.hidden_dims, output_dim=7).to(
-        cfg.device
-    )
+    model = BaselineMLP(input_dim=512, hidden_dims=cfg.hidden_dims, output_dim=7).to(cfg.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
     loss_fn = nn.MSELoss()
 

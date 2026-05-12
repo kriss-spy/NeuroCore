@@ -310,7 +310,7 @@ Convert the notebook narrative into a formal report:
 
 ### During Development (Obsidian Wiki)
 
-Use the existing wiki at `docs/obsidian-wiki/` to track thinking:
+Use the existing wiki at `docs/neurocore-wiki/` to track thinking:
 
 | Wiki Section | Content |
 |--------------|---------|
@@ -336,21 +336,23 @@ Use the existing wiki at `docs/obsidian-wiki/` to track thinking:
 
 Before declaring the project done, verify:
 
-- [ ] Dataset loads correctly; 50 episodes confirmed.
-- [ ] ResNet-18 features extracted and cached.
-- [ ] Baseline MLP trains and reports MSE on held-out test set.
-- [ ] Coreset algorithm selects exactly 5 episodes.
-- [ ] Coreset MLP retrains and beats (or meaningfully compares to) baseline.
+- [x] Dataset loads correctly; 50 episodes confirmed.
+- [x] ResNet-18 features extracted and cached.
+- [x] Baseline MLP trains and reports MSE on held-out test set.
+- [x] Coreset algorithm selects exactly 5 episodes.
+- [x] Coreset MLP retrains and beats (or meaningfully compares to) baseline.
 - [ ] All figures generated and saved to `results/figures/`.
 - [ ] `NeuroCore_full.ipynb` runs end-to-end without errors.
 - [ ] `report.md` is written and includes the "definition of redundancy" section.
-- [ ] All code committed to git with clean notebook diffs.
+- [x] All code committed to git with clean notebook diffs.
 
 ---
 
 ## 6. First Action (When You Say Go)
 
-1. Create `requirements.txt`.
-2. Run `uv pip install -r requirements.txt`.
-3. Create `src/` and `notebooks/` directories.
-4. Write `src/data_utils.py` and start `notebooks/01_data_exploration.ipynb`.
+1. ~~Create `requirements.txt`.~~
+2. ~~Run `uv pip install -r requirements.txt`.~~
+3. ~~Create `src/` and `notebooks/` directories.~~
+4. ~~Write `src/data_utils.py` and start `notebooks/01_data_exploration.ipynb`.~~
+
+**Current priority:** Finalize research report (`results/report.md`) and consolidated notebook.
