@@ -4,6 +4,16 @@ from datasets import load_dataset
 # Cache the dataset so repeated calls are cheap
 _dataset_cache = None
 
+# NOTE: Language Instruction Investigation
+# The ALOHA Sim Transfer Cube (Human Demonstrations) dataset does NOT
+# contain language instruction annotations. After inspecting all fields
+# (observation.state, action, episode_index, frame_index, timestamp,
+# next.done, index, task_index), there is no "language", "instruction",
+# or "text" field. The task_index is uniformly 0 across all 50 episodes,
+# indicating a single-task dataset without natural language labels.
+# Therefore, per the course guidance, we proceed with visual-only
+# features for this lightweight validation experiment.
+
 
 def load_aloha_dataset(split: str = "train"):
     """

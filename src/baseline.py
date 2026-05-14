@@ -112,6 +112,16 @@ def run_baseline(
     Train a baseline MLP on a given subset of episodes (or a random 10% subset if None)
     and evaluate on the rest.
 
+    Brain-inspired design note:
+    The assignment specifies [visual_features + language_instruction] -> [7-DoF action].
+    However, after inspecting the ALOHA dataset, we confirmed that language instruction
+    annotations are not provided (only action vectors, state vectors, and episode indices
+    are available). Therefore, we proceed with a visual-only regression pipeline per the
+    course guidance: "verify whether language labels exist before assuming a multimodal
+    pipeline." The frozen ResNet-18 acts as a passive visual encoder, analogous to the
+    early visual cortex (V1/V2), while the lightweight MLP serves as the downstream
+    motor prediction network.
+
     Args:
         feature_path: path to cached ResNet-18 features.
         config: training hyperparameters.

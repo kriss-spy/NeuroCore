@@ -24,8 +24,38 @@ def select_coreset(
     save_path: str = "results/coreset_selection.json",
 ) -> Tuple[List[int], dict, dict, dict]:
     """
-    Combines the Temporal Prediction score (Alpha weight) with the
-    Distributional RAS Score (1-Alpha weight). Selects top K episodes.
+    统一核心集选择：融合预测编码和 RAS 的层级冗余过滤。
+
+    脑启发机制：
+    大脑在多个层级上并行过滤信息，形成层级化的信息处理流水线：
+
+    1. 早期感觉阶段（预测编码）：位于较低层级的皮层区域（如初级感觉皮层）
+       通过预测编码过滤时间上的可预测信号。如果输入在时间上是可预测的
+       （例如机器人静止），预测误差很小，信号在此阶段就被抑制，不会向上传递。
+
+    2. 晚期注意阶段（RAS）：经过早期过滤的信号进入网状激活系统，RAS 进一步
+       过滤分布上的重复状态。如果某个状态在分布上已经被充分代表，RAS 会降低
+       其传递权重，只保留那些覆盖新奇状态的信号。
+
+    3. 高级皮层：只有同时通过两层过滤的信号才进入高级皮层（如前额叶），
+       用于有意识的学习和决策。
+
+    我们的算法模拟这种层级过滤：
+    - 首先计算每个片段的时间冗余度 R_temp（预测编码层）
+    - 然后计算每个片段的分布冗余度 R_dist（RAS 层）
+    - 通过加权融合得到统一冗余度 R_final
+    - 选择冗余度最低的 k 个片段作为核心集
+
+    参数 alpha 控制两个过滤层的重要性：
+    - alpha = 1.0：仅保留预测编码过滤（纯时间过滤）
+    - alpha = 0.0：仅保留 RAS 过滤（纯分布过滤）
+    - alpha = 0.75（默认）：时间过滤为主导（符合神经科学中预测编码是主要驱动因素的发现）
+
+    数学定义：
+        R_final(e) = alpha * R_temp(e) + (1-alpha) * R_dist(e)
+        Coreset = argmin_{S subset E, |S|=k} sum_{e in S} R_final(e)
+
+    对应脑机制：Predictive Coding + RAS 层级过滤
 
     Returns:
         selected_episodes: list of episode indices
