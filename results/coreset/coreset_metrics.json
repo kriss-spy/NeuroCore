@@ -1,8 +1,8 @@
 {
-  "baseline_mse": 0.006719029508531094,
-  "coreset_mse": 0.006474296096712351,
-  "improvement": 0.00024473341181874275,
-  "improvement_percent": 3.642392275670271,
+  "baseline_mse": 0.006805050652474165,
+  "coreset_mse": 0.006630298215895891,
+  "improvement": 0.00017475243657827377,
+  "improvement_percent": 2.56798142295587,
   "selected_episodes": [
     30,
     8,

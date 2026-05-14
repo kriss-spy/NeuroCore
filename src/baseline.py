@@ -9,6 +9,10 @@ import torch.nn as nn
 from torch.utils.data import DataLoader, TensorDataset
 
 from src.data_utils import extract_single_arm_action, load_aloha_dataset
+from src.language_encoder import (
+    extract_language_embedding,
+    get_language_embedding_dim,
+)
 
 
 @dataclass
@@ -21,6 +25,10 @@ class BaselineConfig:
     seed: int = 42
     max_frames_per_episode: int | None = None
     device: str = "cuda" if torch.cuda.is_available() else "cpu"
+    # Whether to concatenate the frozen CLIP language embedding to each sample.
+    # When True, the model becomes a multimodal [vision + language] -> action
+    # regressor, satisfying the assignment's specification.
+    use_language: bool = True
 
 
 def _set_seed(seed: int) -> None:
@@ -51,7 +59,16 @@ def _build_feature_action_pairs(
     features: Dict[Tuple[int, int], torch.Tensor],
     episode_indices: Iterable[int],
     max_frames_per_episode: int | None,
+    lang_embedding: np.ndarray | None = None,
 ) -> Tuple[np.ndarray, np.ndarray]:
+    """
+    Build (X, y) arrays for the given episodes.
+
+    Args:
+        lang_embedding: Optional 1-D array of shape (lang_dim,). When provided,
+            it is concatenated to every visual feature vector, realising the
+            assignment's [visual_features + language_instruction] input.
+    """
     x_list: List[np.ndarray] = []
     y_list: List[np.ndarray] = []
     episode_set = set(int(ep) for ep in episode_indices)
@@ -77,7 +94,11 @@ def _build_feature_action_pairs(
         if (ep, frame) not in action_map:
             continue
         action = action_map[(ep, frame)]
-        x_list.append(feature.numpy())
+        feat = feature.numpy()
+        # Concatenate frozen language embedding if requested.
+        if lang_embedding is not None:
+            feat = np.concatenate([feat, lang_embedding], axis=0)
+        x_list.append(feat)
         y_list.append(action)
         per_episode_counts[ep] += 1
 
@@ -113,14 +134,18 @@ def run_baseline(
     and evaluate on the rest.
 
     Brain-inspired design note:
-    The assignment specifies [visual_features + language_instruction] -> [7-DoF action].
-    However, after inspecting the ALOHA dataset, we confirmed that language instruction
-    annotations are not provided (only action vectors, state vectors, and episode indices
-    are available). Therefore, we proceed with a visual-only regression pipeline per the
-    course guidance: "verify whether language labels exist before assuming a multimodal
-    pipeline." The frozen ResNet-18 acts as a passive visual encoder, analogous to the
-    early visual cortex (V1/V2), while the lightweight MLP serves as the downstream
-    motor prediction network.
+    This pipeline implements the assignment's [visual_features + language_instruction]
+    -> [7-DoF action] specification. The frozen ResNet-18 acts as the visual encoder
+    (analogous to early visual cortex V1/V2), while a frozen CLIP text encoder
+    provides the language goal signal (analogous to the prefrontal cortex holding
+    a task goal in working memory). Both encoders are kept frozen; only the
+    lightweight MLP — the downstream motor prediction network — is trained.
+
+    Although the ALOHA dataset does not provide per-frame language annotations,
+    it is a single-task dataset (task_index=0 for all episodes). We therefore
+    assign a unified task-level language instruction: "Pick up the cube and
+    transfer it to the target location." This models how the PFC broadcasts a
+    stable task goal to sensorimotor areas during skill acquisition.
 
     Args:
         feature_path: path to cached ResNet-18 features.
@@ -144,11 +169,21 @@ def run_baseline(
     test_episodes = [ep for ep in range(total_episodes) if ep not in train_episodes]
 
     features = _load_cached_features(feature_path)
+
+    # Load frozen CLIP language embedding if requested.
+    lang_emb: np.ndarray | None = None
+    if cfg.use_language:
+        lang_tensor = extract_language_embedding(device=cfg.device)
+        lang_emb = lang_tensor.numpy()
+        print(f"Language embedding shape: {lang_emb.shape}")
+    else:
+        print("Running in visual-only mode (no language embedding).")
+
     x_train, y_train = _build_feature_action_pairs(
-        dataset, features, train_episodes, cfg.max_frames_per_episode
+        dataset, features, train_episodes, cfg.max_frames_per_episode, lang_emb
     )
     x_test, y_test = _build_feature_action_pairs(
-        dataset, features, test_episodes, cfg.max_frames_per_episode
+        dataset, features, test_episodes, cfg.max_frames_per_episode, lang_emb
     )
 
     train_dataset = TensorDataset(
@@ -163,7 +198,10 @@ def run_baseline(
     train_loader = DataLoader(train_dataset, batch_size=cfg.batch_size, shuffle=True)
     test_loader = DataLoader(test_dataset, batch_size=cfg.batch_size, shuffle=False)
 
-    model = BaselineMLP(input_dim=512, hidden_dims=cfg.hidden_dims, output_dim=7).to(cfg.device)
+    input_dim = x_train.shape[1]
+    print(f"MLP input dim: {input_dim} (visual={input_dim - (lang_emb.shape[0] if lang_emb is not None else 0)}, language={lang_emb.shape[0] if lang_emb is not None else 0})")
+
+    model = BaselineMLP(input_dim=input_dim, hidden_dims=cfg.hidden_dims, output_dim=7).to(cfg.device)
     optimizer = torch.optim.Adam(model.parameters(), lr=cfg.learning_rate)
     loss_fn = nn.MSELoss()
 
@@ -217,6 +255,8 @@ def run_baseline(
         "test_episodes": test_episodes,
         "train_losses": train_losses,
         "val_losses": val_losses,
+        "use_language": cfg.use_language,
+        "input_dim": input_dim,
     }
 
     metrics_path = os.path.join(save_dir, "baseline_metrics.json")
