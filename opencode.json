@@ -33,5 +33,12 @@
       "template": "Run the wiki-capture skill. Save the current conversation as a wiki note. Distill the key concepts, decisions, and takeaways into a properly formatted markdown page in the vault with correct frontmatter.",
       "description": "Save current conversation as wiki note"
     }
+  },
+  "mcp": {
+    "jupyter-vscode": {
+      "type": "remote",
+      "url": "http://localhost:9123/sse",
+      "enabled": true
+    }
   }
 }
