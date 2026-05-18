@@ -138,8 +138,18 @@ events.out.tfevents.*
 # -----------------------------------------------------------------------------
 # Outputs, results, visualisations
 # -----------------------------------------------------------------------------
+results/**
+!results/FINAL_REPORT.md
+!results/FINAL_REPORT.pdf
+!results/figures/
+!results/figures/**
+!results/coreset_selection.json
+!results/baseline_metrics.json
+!results/coreset_metrics.json
+!results/coreset/
+!results/coreset/**
+
 outputs/
-results/
 figures/
 plots/
 predictions/
@@ -174,6 +184,11 @@ Thumbs.db
 *.key
 secrets.yaml
 secrets.json
+
+# -----------------------------------------------------------------------------
+# Context
+# -----------------------------------------------------------------------------
+.agents
 
 # -----------------------------------------------------------------------------
 # Misc

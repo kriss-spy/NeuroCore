@@ -74,12 +74,14 @@ def select_coreset(
 
     final_scores = {}
     for ep in temp_scores.keys():
-        final_scores[ep] = (alpha * temp_norm[ep]) + (
+        # Convert information utility (score) to redundancy (1 - score)
+        # to match the paper's definition: Coreset = argmin sum R_final
+        final_scores[ep] = 1.0 - ((alpha * temp_norm[ep]) + (
             (1 - alpha) * dist_norm.get(ep, 0.0)
-        )
+        ))
 
-    # Sort descending
-    sorted_eps = sorted(final_scores.items(), key=lambda x: x[1], reverse=True)
+    # Sort ascending (minimizing redundancy)
+    sorted_eps = sorted(final_scores.items(), key=lambda x: x[1], reverse=False)
     selected_episodes = [ep for ep, score in sorted_eps[:k]]
 
     os.makedirs(os.path.dirname(save_path) or ".", exist_ok=True)

@@ -1,150 +1,86 @@
-# NeuroCore: Brain-Inspired Coreset Selection for Lightweight VLA
+# NeuroCore: 基于脑启发核心集选择的轻量级 VLA 机械臂动作预测
 
 > Course project: Brain-inspired coreset selection for lightweight Vision-Language-Action (VLA) robotic arm action prediction.
 
-## Overview
+## 📌 项目概述 (Overview)
 
-NeuroCore explores how brain-inspired data selection mechanisms can improve the efficiency of training lightweight VLA models for robotic manipulation. Real-world robot demonstration datasets contain massive temporal and distributional redundancy, making full-dataset training computationally wasteful. By drawing inspiration from the human brain's **predictive coding** and **reticular activating system (RAS)**, we design automated data-pruning algorithms to extract high-value coresets from the ALOHA Sim Transfer Cube dataset.
+NeuroCore 探索了如何利用脑启发式数据选择机制（Coreset Selection）来提升轻量级 VLA 模型在机器人操作任务中的训练效率。
+机器人演示数据集通常包含大量的时间（Temporal）和分布（Distributional）冗余。受人类大脑的**预测编码（Predictive Coding）**和**网状激活系统（RAS）**启发，我们设计并实现了自动化的数据剪枝算法，从 ALOHA Sim 数据集中提取高价值的核心子集。
 
-**Key insight**: The human brain processes enormous sensory data streams using only ~20 watts of power, thanks to efficient filtering mechanisms. We operationalize these mechanisms to prune redundant robot demonstration data and train better models with less compute.
+**核心结论**：在仅使用 10% 数据量的条件下，脑启发核心集训练的模型在测试集上的均方误差（MSE）比随机采样降低了 **2.57%**。
 
-## Architecture
+## 🧠 脑启发机制 (Brain-Inspired Mechanisms)
 
-The project consists of three stages:
+### 1. 预测编码 (Predictive Coding) - 时间冗余过滤
+大脑通过忽略可预测的感官输入来节省能量，仅对“预测误差”产生显著反应。
+- **实现**：通过计算动作变化量 $\Delta a_t$ 量化预测误差。变化量大的帧被认为信息价值更高，冗余度低。
 
-### 1. Baseline
-- Randomly sample 10% of trajectories from the ALOHA Sim dataset
-- Extract visual features with **frozen ResNet-18** or **CLIP** (offline, no training)
-- Build regression dataset: `[visual_features, language_instruction] → [7-DoF arm action]`
-- Train a lightweight **MLP** and report **Mean Squared Error (MSE)**
+### 2. 网状激活系统 (RAS) - 分布冗余过滤
+RAS 负责过滤背景噪音，引导注意力聚焦于高信息效用的状态。
+- **实现**：利用 K-Means 聚类离散化视觉状态空间。优先选择能够覆盖更多样、更独特“任务状态簇”的片段。
 
-### 2. Brain-Inspired Coreset Selection
-Replace random sampling with an automated pruning algorithm:
+## 🚀 快速开始 (Quick Start)
 
-- **Temporal Redundancy Filtering** (Predictive Coding-inspired): Filter frames based on continuous action variance—keep only frames where the action changes significantly
-- **Distributional Redundancy Filtering** (RAS-inspired): Cluster visual features and select representative samples to ensure coverage of the action distribution
-
-Target: Select the "most valuable" 10% subset that preserves or improves model performance.
-
-### 3. Validation
-- Retrain the same MLP architecture on the selected 10% coreset
-- Report MSE and compare against the random baseline
-- Demonstrate that high-quality data subsets yield better model performance than random sampling
-
-## Dataset
-
-**ALOHA Sim Transfer Cube (Human Demonstrations)** from [Hugging Face LeRobot](https://huggingface.co/datasets/lerobot/aloha_sim_transfer_cube_human)
-
-- 50 successful human demonstration episodes
-- Multi-view camera images + 14-DoF joint actions (7-DoF per arm)
-- ~200 MB total, suitable for laptop training
-- Can reduce to single camera view + single-arm 7-DoF actions for simplicity
-
-```python
-from datasets import load_dataset
-
-dataset = load_dataset("lerobot/aloha_sim_transfer_cube_human")
-```
-
-## Quick Start
-
-### Local
+### 环境安装 (Installation)
 
 ```bash
-# Clone the repository
 git clone <repo-url>
 cd NeuroCore
-
-# Install dependencies
 pip install -r requirements.txt
+```
 
-# Run baseline
+### 运行实验 (Run Experiments)
+
+```bash
+# 1. 运行随机基线 (Baseline)
 python -m src.baseline
 
-# Run coreset selection
+# 2. 运行脑启发核心集选择 (Coreset Selection)
 python -m src.coreset.select
 
-# Validate
+# 3. 验证并对比结果 (Validation)
 python -m src.validate
 ```
 
-### Google Colab
+### 交互式展示 (Notebook)
+打开 `notebooks/NeuroCore.ipynb` 查看完整的实验流程、可视化图表及理论分析。
 
-Open `notebooks/NeuroCore_full.ipynb` directly in Colab. The first cell auto-detects Colab, clones the repo, and installs dependencies. The notebook runs end-to-end without any local setup.
-
-## Project Structure
+## 📂 项目结构 (Structure)
 
 ```
 NeuroCore/
-├── README.md                    # This file
-├── AGENTS.md                    # Agent instructions for OpenCode
-├── PLAN.md                      # Execution plan and checklist
-├── requirements.txt             # Python dependencies
-├── .env                         # Wiki path configuration
 ├── src/
-│   ├── data_utils.py           # Dataset loading and action extraction
-│   ├── feature_extractor.py    # Frozen ResNet-18 feature extraction
-│   ├── baseline.py             # Random sampling baseline + MLP
-│   ├── validate.py             # Coreset retraining + comparison
-│   └── coreset/
-│       ├── __init__.py
-│       ├── select.py           # Unified coreset selection
-│       ├── temporal_filter.py  # Predictive coding–inspired scoring
-│       └── distributional_filter.py  # RAS-inspired clustering scoring
+│   ├── coreset/
+│   │   ├── temporal_filter.py      # 时间冗余评分 (预测编码)
+│   │   ├── distributional_filter.py# 分布冗余评分 (RAS)
+│   │   └── select.py               # 统一核心集选择逻辑 (argmin R_final)
+│   ├── baseline.py                 # 多模态基线训练 [视觉+语言] -> 动作
+│   ├── data_utils.py               # 数据加载与处理
+│   └── validate.py                 # 核心集验证与对比实验
 ├── notebooks/
-│   ├── 01_data_exploration.ipynb
-│   ├── 02_feature_extraction.ipynb
-│   ├── 03_baseline.ipynb
-│   ├── 04_coreset_selection.ipynb
-│   ├── 05_coreset_validation.ipynb
-│   └── NeuroCore_full.ipynb    # Colab-ready master notebook
+│   └── NeuroCore.ipynb             # 核心实验过程与结果展示
+├── results/
+│   ├── FINAL_REPORT.md             # 最终学术报告 (中文版)
+│   ├── FINAL_REPORT.pdf            # 最终学术报告 (PDF)
+│   └── figures/                    # 实验结果图表
 ├── docs/
-│   ├── papers/                 # Reference PDFs
-│   └── neurocore-wiki/         # Project knowledge base (Obsidian)
-└── results/
-    ├── features_resnet18.pt    # Cached 512-D visual features
-    ├── checkpoints/            # Model checkpoints
-    ├── figures/                # Comparison plots
-    ├── coreset_selection.json  # Selected episode IDs
-    ├── baseline_metrics.json   # Baseline results
-    ├── coreset/                # Coreset validation results
-    └── report.md               # Research report
+│   ├── papers/                     # 参考文献 PDFs
+│   └── neurocore-wiki/             # 基于 Obsidian 的知识库
+└── requirements.txt                # 项目依赖
 ```
 
-## Brain-Inspired Mechanisms
+## 📊 实验结果 (Results)
 
-### Predictive Coding (Temporal Filtering)
-The brain constantly generates predictions about incoming sensory data. Only prediction errors—moments when reality diverges from expectation—trigger strong neural activation. We operationalize this by:
-- Computing action variance across temporal windows
-- Filtering out "idle frames" where the robot is stationary or repeating the same action
-- Retaining frames with high action novelty
+| 方法 (Method) | 训练数据量 | 测试 MSE | 性能提升 |
+| :--- | :--- | :--- | :--- |
+| 随机采样 (Random 10%) | 5 episodes | 0.00681 | - |
+| **NeuroCore (Ours 10%)** | 5 episodes | **0.00663** | **+2.57%** |
 
-### Reticular Activating System (Distributional Filtering)
-The RAS filters background noise and focuses attention on high-information-utility moments. We operationalize this by:
-- Clustering visual features to identify action modes
-- Selecting diverse representatives from each cluster
-- Ensuring coverage of rare but important actions (e.g., grasping, releasing)
+## 🔗 参考文献 (References)
 
-## Expected Results
-
-| Method | Data Used | Expected MSE |
-|--------|-----------|--------------|
-| Random Baseline | 10% random | Higher |
-| Coreset (Ours) | 10% selected | Lower |
-
-*Hypothesis: Coreset selection achieves lower MSE than random sampling with the same data budget, demonstrating that data quality matters more than quantity.*
-
-## References
-
-1. **[ACT]** Zhao T Z, et al. [Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware](https://arxiv.org/abs/2304.13705). RSS, 2023.
-2. **[Data Pruning]** Sorscher B, et al. [Beyond neural scaling laws: beating power law scaling via data pruning](https://arxiv.org/abs/2206.14486). NeurIPS, 2022.
-3. **[OpenVLA]** Kim M J, et al. [OpenVLA: An Open-Source Vision-Language-Action Model](https://arxiv.org/abs/2406.09246). arXiv, 2024.
-4. **[Predictive Coding]** Millidge B, et al. [Predictive coding: a theoretical and experimental review](https://arxiv.org/abs/2107.12979). arXiv, 2021.
-
-## License
-
-This is a course project for educational purposes.
+1. Zhao T Z, et al. [Learning Fine-Grained Bimanual Manipulation with Low-Cost Hardware (ACT)](https://arxiv.org/abs/2304.13705). RSS, 2023.
+2. Sorscher B, et al. [Beyond neural scaling laws: beating power law scaling via data pruning](https://arxiv.org/abs/2206.14486). NeurIPS, 2022.
+3. Millidge B, et al. [Predictive coding: a theoretical and experimental review](https://arxiv.org/abs/2107.12979). arXiv, 2021.
 
 ---
-
-**Original Assignment**: 基于脑启发核心集选择的轻量级 VLA 机械臂动作预测 (Brain-Inspired Coreset Selection for Lightweight VLA Robotic Arm Action Prediction)
+**Course Project**: 视觉认知工程 (2026春)
